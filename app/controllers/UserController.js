@@ -2,11 +2,12 @@
 const User = require('../models/UserModel');
 const bcript = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const config = require('../config/config');
+const config = require('../../config/config');
 
 module.exports = {
 
 	async authenticate(request, response) {
+		// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVkNWMxNDYzNDdhZjk3MGUxMGFlYzZkYyIsImlhdCI6MTU2NjMxNTYxOSwiZXhwIjoxNTY2NDAyMDE5fQ.Pm5JcqQ45a_MoZZgTgEIOR0d-gXjN9tQ7OyLs8vD9iE
 
 		const { email, password } = request.body;
 
@@ -15,14 +16,10 @@ module.exports = {
 		if (!user) {
 			return response.status(400).json({ _id: 0, name: 'User not found' });
 		}
-		else {
-
-		}
 
 		if (!await bcript.compare(password, user.password)) {
 			return response.status(400).json({ _id: 0, name: 'Error login' });
 		}
-		//console.log(user[0].password);
 
 		user.password = undefined;
 
@@ -40,8 +37,6 @@ module.exports = {
 		const hash = await bcript.hash(request.body.password, 10);
 		request.body.password = hash;
 
-		//console.log(bcript.hash(request.body.password, 10));
-
 		await User.create(request.body, (err, user) => {
 			if(err) {
 				// Retorna um objeto com o erro.
@@ -55,6 +50,7 @@ module.exports = {
 				);
 				// Retorna um objeto com o registro do novo usuário
 				// e o token.
+				user.password = undefined;
 				response.json({user, token});
 			}
 		})
