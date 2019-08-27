@@ -2,7 +2,7 @@
 const User = require('../models/UserModel');
 const bcript = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const config = require('../../config/config');
+const auth = require('../../config/auth');
 
 module.exports = {
 
@@ -24,8 +24,8 @@ module.exports = {
 		user.password = undefined;
 
 		const token = jwt.sign(
-			{ id: user.id }, 
-			config.secret, 
+			{ id: user.id },
+			auth.secret,
 			{ expiresIn: 86400 }
 		);
 
@@ -44,8 +44,8 @@ module.exports = {
 			}
 			else {
 				const token = jwt.sign(
-					{ id: user.id }, 
-					config.secret, 
+					{ id: user.id },
+					auth.secret,
 					{ expiresIn: 86400 }
 				);
 				// Retorna um objeto com o registro do novo usuário
@@ -85,7 +85,7 @@ module.exports = {
 		});
 	},
 
-	// Atualiza os dados do registro de um usuário no banco pelo seu 
+	// Atualiza os dados do registro de um usuário no banco pelo seu
 	// respectivo ID
 	async updateUser(request, response) {
 		await User.findById(request.params['id'], (err, user) => {
@@ -97,7 +97,7 @@ module.exports = {
 				user.name = request.body.name;
 				user.email = request.body.email;
 				user.password = request.body.password;
-				
+
 				user.save((err, user) => {
 					if(err) {
 						// Retorna um objeto com o erro.
@@ -113,7 +113,7 @@ module.exports = {
 		});
 	},
 
-	// Exclui o registro de um usuário do banco segundo seu 
+	// Exclui o registro de um usuário do banco segundo seu
 	// respectivo ID
 	async deleteUserById(request, response) {
 		await User.findByIdAndDelete(request.params['id'], (err, user) => {
